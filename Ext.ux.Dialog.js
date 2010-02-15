@@ -5,8 +5,8 @@ Ext.ux.DialogPanel = Ext.extend(Ext.Panel, {
   frame:true
   ,height:150
   ,width:185
-//  ,closable:false
-//  ,layout:"fit"
+  ,closable:true
+  ,layout:"fit"
   ,title:"Dialog"
   ,buttonAlign:"center"
 
@@ -51,7 +51,7 @@ Ext.ux.DialogPanel = Ext.extend(Ext.Panel, {
   ,loadConfig:function() {
     if (this.config.title) this.setTitle(this.config.title);
     if (this.config.iconCls) this.setIconClass(this.config.iconCls);
-    if (this.config.layout) this.setLayout(this.layout);
+//    if (this.config.layout) this.setLayout(this.config.layout);
     if (this.config.width) this.setWidth(this.config.width);
     if (this.config.height) this.setHeight(this.config.height);
     if (this.config.buttons) this.addButtons(this.config.buttons);
