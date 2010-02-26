@@ -10,6 +10,7 @@ Ext.ux.DialogPanel = Ext.extend(Ext.Panel, {
   ,title:"Dialog"
   ,buttonAlign:"center"
 
+
   ,initComponent:function() {
     this.buttons = []; // to force fbar creation
     this.config = {
