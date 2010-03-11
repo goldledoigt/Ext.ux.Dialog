@@ -1,8 +1,61 @@
+/*
+** script.js for Ext.ux.Dialog
+**
+** Made by goldledoigt
+** Contact <gary@chewam.com>
+**
+** Started on  Thu Mar 11 19:41:28 2010 goldledoigt
+** Last update Thu Mar 11 21:43:06 2010 goldledoigt
+*/
+
 Ext.onReady(function(){
 
-    Ext.ux.Dialog = new Ext.ux.DialogPanel;
+//    Ext.dialog = new Ext.ux.Dialog;
 
-    // sample static data for the store
+    /****************************************************
+     * BUTTONS ******************************************
+     ***************************************************/
+
+    new Ext.Panel({
+      renderTo:Ext.getBody(),
+      width:250,
+      height:40,
+      layout:"hbox",
+      border:false,
+      defaults:{
+	xtype:"button"
+	,flex:1
+	,margins:'10'
+      },
+      items:[{
+	text:"dialog over grid"
+	,handler:function() {
+	  grid.openDialog({
+	    title:"Dialog box"
+	    ,items:[{
+	      html:"a simple message"
+	    }]
+	    ,buttons:[{
+	      text:"OK"
+	    }]
+	  });
+	}
+      }, {
+	text:"dialog over form"
+	,handler:function() {
+	  form.openDialog({
+	    items:[{
+	      html:"a simple message"
+	    }]
+	  });
+	}
+      }]
+    });
+
+    /****************************************************
+     * GRID *********************************************
+     ***************************************************/
+
     var myData = [
         ['3m Co',71.72,0.02,0.03,'9/1 12:00am'],
         ['Alcoa Inc',29.01,0.42,1.47,'9/1 12:00am'],
@@ -35,82 +88,56 @@ Ext.onReady(function(){
         ['Wal-Mart Stores, Inc.',45.45,0.73,1.63,'9/1 12:00am']
     ];
 
-    // create the data store
-    var store = new Ext.data.ArrayStore({
-      fields: ['company', 'price', 'change', 'pctChange', 'lastChange']
-    });
-
-    // manually load local data
-    store.loadData(myData);
-
-    // create the Grid
     var grid = new Ext.grid.GridPanel({
-        store: store,
-        columns: [
-            {id:'company',header: 'Company', dataIndex: 'company'},
-            {header: 'Price', dataIndex: 'price'},
-            {header: 'Change', dataIndex: 'change'},
-            {header: '% Change', dataIndex: 'pctChange'},
-            {header: 'Last Updated', dataIndex: 'lastChange'}
-        ],
-        height: 350,
-        width: 400,
-	floating:true,
-	x:10,
-	y:50,
-        title: 'Array Grid'
+      renderTo:Ext.getBody(),
+      title: 'Array Grid',
+      height: 350,
+      width: 400,
+      floating:true,
+      x:10,
+      y:50,
+      store:new Ext.data.ArrayStore({
+	fields: ['company', 'price', 'change', 'pctChange', 'lastChange']
+      }),
+      columns: [
+        {id:'company',header: 'Company', dataIndex: 'company'},
+        {header: 'Price', dataIndex: 'price'},
+        {header: 'Change', dataIndex: 'change'},
+        {header: '% Change', dataIndex: 'pctChange'},
+        {header: 'Last Updated', dataIndex: 'lastChange'}
+      ]
     });
 
-    // render the grid to the specified div in the page
-    grid.render('foo');
+    grid.getStore().loadData(myData);
+
+    /****************************************************
+     * FORM *********************************************
+     ***************************************************/
 
     var form = new Ext.FormPanel({
       labelWidth: 75, // label settings here cascade unless overridden
-      bodyStyle:'padding:5px 5px 0',
-      border:false,
-      width: 350,
+      bodyStyle:'padding:10px;border-width:0 0 1px 0;',
       defaults: {width: 230},
       defaultType: 'textfield',
-      items: [{
-	fieldLabel: 'First Name',
-	name: 'first',
-	allowBlank:false
-      },{
-	fieldLabel: 'Last Name',
-	name: 'last'
-      },{
-	fieldLabel: 'Company',
-	name: 'company'
-      }, {
-	fieldLabel: 'Email',
-	name: 'email',
-	vtype:'email'
-      }, new Ext.form.TimeField({
-	fieldLabel: 'Time',
-	name: 'time',
-	minValue: '8:00am',
-	maxValue: '6:00pm'
-      })],
-      buttons: [{
-	text: 'Save'
-      },{
-	text: 'Cancel'
-      }]
+      items:[
+	{fieldLabel: 'First Name', name: 'first'}
+	,{fieldLabel: 'Last Name', name: 'last'}
+	,{fieldLabel: 'Company', name: 'company'}
+	,{fieldLabel: 'Email', name: 'email', vtype:'email'}
+      ],
+      buttons:[{text:'Save'}, {text:'Cancel'}]
     });
 
     new Ext.Window({
-      title: 'Simple Form',
-      items:form
+      title:'Simple Form',
+      width:350,
+      height:195,
+      layout:"fit",
+      items:form,
+      plain:true,
+      closable:false,
+      x:430,
+      y:50
     }).show();
-
-    new Ext.Button({
-      renderTo:Ext.getBody()
-      ,text:"dialog over grid"
-    });
-
-    new Ext.Button({
-      renderTo:Ext.getBody()
-      ,text:"dialog over tree"
-    });
 
 });
