@@ -1,14 +1,57 @@
+/*
+** Ext.ux.Dialog.js for Ext.ux.Dialog
+**
+** Made by goldledoigt
+** Contact <gary@chewam.com>
+**
+** Started on  Thu Mar 11 19:41:06 2010 goldledoigt
+** Last update Thu Mar 11 22:07:11 2010 goldledoigt
+*/
+
 Ext.ns('Ext.ux');
+
+/****************************************************
+ * Ext.ux.Dialog ************************************
+ ***************************************************/
+
+Ext.override(Ext.Component, {
+  enableDialog:true
+  ,openDialog:function(config) {
+    if (!this.enableDialog) return;
+    if (!this.dialog) {
+      this.dialog = new Ext.ux.DialogPanel;
+      this.dialog.init(this);
+      this.dialog.lastConfig = {};
+    }
+    console.log(this.dialog.lastConfig, config);
+    if (this.dialog.lastConfig != config) {
+      Ext.apply(this.dialog.lastConfig, config);
+      console.log("pof");
+      var items = Ext.isArray(config.items)
+	? Ext.clean(config.items)
+	: Ext.apply({}, config.items);
+      delete config.items;
+      this.dialog.setConfig(config);
+      this.dialog.open(items);
+    } else this.dialog.show();
+  }
+});
+
+/****************************************************
+ * Ext.ux.DialogPanel *******************************
+ ***************************************************/
 
 Ext.ux.DialogPanel = Ext.extend(Ext.Panel, {
 
   frame:true
-  ,height:150
+//  ,height:150
   ,width:185
+  ,autoHeight:true
   ,closable:true
   ,layout:"fit"
   ,title:"Dialog"
   ,buttonAlign:"center"
+  ,bodyStyle:"text-align:center"
 
   ,initComponent:function() {
     this.buttons = []; // to force fbar creation
@@ -73,25 +116,15 @@ Ext.ux.DialogPanel = Ext.extend(Ext.Panel, {
       this.show();
       this.el.anchorTo(this.boundEl, "c-c");
       this.doLayout();
-      //this.fbar.doLayout();
-      /*
-      if (!this.closable) {
-	this.isLocked = true;
-	this.unlock.defer(5000, this);
-      }
-       */
       return this;
     }
     return false;
   }
 
   ,close:function(force) {
-//    if (this.isLocked && !force) this.toHide = true;
     if(this.fireEvent('beforeclose', this) !== false) {
-//      this.isLocked = false;
       this.boundEl.unmask();
       this.hide();
-//      this.el.fadeOut();
       return true;
     }
     return false;

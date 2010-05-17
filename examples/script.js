@@ -1,20 +1,61 @@
-/*!
- * Ext JS Library 3.1.1
- * Copyright(c) 2006-2010 Ext JS, LLC
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
+/*
+** script.js for Ext.ux.Dialog
+**
+** Made by goldledoigt
+** Contact <gary@chewam.com>
+**
+** Started on  Thu Mar 11 19:41:28 2010 goldledoigt
+** Last update Thu Mar 11 21:43:06 2010 goldledoigt
+*/
+
 Ext.onReady(function(){
 
-    // NOTE: This is an example showing simple state management. During development,
-    // it is generally best to disable state management as dynamically-generated ids
-    // can change across page loads, leading to unpredictable results.  The developer
-    // should ensure that stable state ids are set for stateful components in real apps.
-    Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+//    Ext.dialog = new Ext.ux.Dialog;
 
-    Ext.ux.Dialog = new Ext.ux.DialogPanel;
+    /****************************************************
+     * BUTTONS ******************************************
+     ***************************************************/
 
-    // sample static data for the store
+    new Ext.Panel({
+      renderTo:Ext.getBody(),
+      width:250,
+      height:40,
+      layout:"hbox",
+      border:false,
+      defaults:{
+	xtype:"button"
+	,flex:1
+	,margins:'10'
+      },
+      items:[{
+	text:"dialog over grid"
+	,handler:function() {
+	  grid.openDialog({
+	    title:"Dialog box"
+	    ,items:[{
+	      html:"a simple message"
+	    }]
+	    ,buttons:[{
+	      text:"OK"
+	    }]
+	  });
+	}
+      }, {
+	text:"dialog over form"
+	,handler:function() {
+	  form.openDialog({
+	    items:[{
+	      html:"a simple message"
+	    }]
+	  });
+	}
+      }]
+    });
+
+    /****************************************************
+     * GRID *********************************************
+     ***************************************************/
+
     var myData = [
         ['3m Co',71.72,0.02,0.03,'9/1 12:00am'],
         ['Alcoa Inc',29.01,0.42,1.47,'9/1 12:00am'],
@@ -47,79 +88,56 @@ Ext.onReady(function(){
         ['Wal-Mart Stores, Inc.',45.45,0.73,1.63,'9/1 12:00am']
     ];
 
-    /**
-     * Custom function used for column renderer
-     * @param {Object} val
-     */
-    function change(val){
-        if(val > 0){
-            return '<span style="color:green;">' + val + '</span>';
-        }else if(val < 0){
-            return '<span style="color:red;">' + val + '</span>';
-        }
-        return val;
-    }
-
-    /**
-     * Custom function used for column renderer
-     * @param {Object} val
-     */
-    function pctChange(val){
-        if(val > 0){
-            return '<span style="color:green;">' + val + '%</span>';
-        }else if(val < 0){
-            return '<span style="color:red;">' + val + '%</span>';
-        }
-        return val;
-    }
-
-    // create the data store
-    var store = new Ext.data.ArrayStore({
-        fields: [
-           {name: 'company'},
-           {name: 'price', type: 'float'},
-           {name: 'change', type: 'float'},
-           {name: 'pctChange', type: 'float'},
-           {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
-        ]
-    });
-
-    // manually load local data
-    store.loadData(myData);
-
-    // create the Grid
     var grid = new Ext.grid.GridPanel({
-        store: store,
-        columns: [
-            {id:'company',header: 'Company', width: 160, sortable: true, dataIndex: 'company'},
-            {header: 'Price', width: 75, sortable: true, renderer: 'usMoney', dataIndex: 'price'},
-            {header: 'Change', width: 75, sortable: true, renderer: change, dataIndex: 'change'},
-            {header: '% Change', width: 75, sortable: true, renderer: pctChange, dataIndex: 'pctChange'},
-            {header: 'Last Updated', width: 85, sortable: true, renderer: Ext.util.Format.dateRenderer('m/d/Y'), dataIndex: 'lastChange'}
-        ],
-	tbar:[{
-	  text:"open dialog",
-	  handler:function() {
-	    Ext.ux.Dialog.init(grid);
-	    Ext.ux.Dialog.open([{
-	      html:"simple dialog binded to a grid",
-	      border:false
-	    }]);
-	  }
-	}],
-        stripeRows: true,
-        autoExpandColumn: 'company',
-        height: 350,
-        width: 600,
-	floating:true,
-	x:10,
-	y:10,
-        title: 'Array Grid',
-        // config options for stateful behavior
-        stateful: true,
-        stateId: 'grid'
+      renderTo:Ext.getBody(),
+      title: 'Array Grid',
+      height: 350,
+      width: 400,
+      floating:true,
+      x:10,
+      y:50,
+      store:new Ext.data.ArrayStore({
+	fields: ['company', 'price', 'change', 'pctChange', 'lastChange']
+      }),
+      columns: [
+        {id:'company',header: 'Company', dataIndex: 'company'},
+        {header: 'Price', dataIndex: 'price'},
+        {header: 'Change', dataIndex: 'change'},
+        {header: '% Change', dataIndex: 'pctChange'},
+        {header: 'Last Updated', dataIndex: 'lastChange'}
+      ]
     });
 
-    // render the grid to the specified div in the page
-    grid.render('foo');
+    grid.getStore().loadData(myData);
+
+    /****************************************************
+     * FORM *********************************************
+     ***************************************************/
+
+    var form = new Ext.FormPanel({
+      labelWidth: 75, // label settings here cascade unless overridden
+      bodyStyle:'padding:10px;border-width:0 0 1px 0;',
+      defaults: {width: 230},
+      defaultType: 'textfield',
+      items:[
+	{fieldLabel: 'First Name', name: 'first'}
+	,{fieldLabel: 'Last Name', name: 'last'}
+	,{fieldLabel: 'Company', name: 'company'}
+	,{fieldLabel: 'Email', name: 'email', vtype:'email'}
+      ],
+      buttons:[{text:'Save'}, {text:'Cancel'}]
+    });
+
+    new Ext.Window({
+      title:'Simple Form',
+      width:350,
+      height:195,
+      layout:"fit",
+      items:form,
+      plain:true,
+      closable:false,
+      x:430,
+      y:50
+    }).show();
+
 });
