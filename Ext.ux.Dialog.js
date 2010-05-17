@@ -67,7 +67,7 @@ Ext.ux.DialogPanel = Ext.extend(Ext.Panel, {
       this.boundEl.mask();
       if (!this.isRendered) this.render(this.boundEl);
       this.removeAll();
-      this.fbar.removeAll();
+      if (this.fbar) this.fbar.removeAll();
       this.loadConfig();
       this.add(content);
       this.show();
